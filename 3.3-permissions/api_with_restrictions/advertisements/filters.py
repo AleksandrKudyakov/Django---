@@ -8,7 +8,14 @@ class AdvertisementFilter(filters.FilterSet):
 
     # TODO: задайте требуемые фильтры
     created_at = filters.DateFromToRangeFilter()
-
+    updated_at = filters.DateFromToRangeFilter()
+    favorite = filters.CharFilter(method='favorites_filter')
+    
     class Meta:
         model = Advertisement
         fields = ['created_at', 'creator', 'status']
+        
+        def favorites_filter(self, queryset, name, value):
+            if value == 'true':
+                return queryset.filter(favorite=self.request.user)
+            return queryset
